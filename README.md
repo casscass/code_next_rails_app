@@ -1,5 +1,7 @@
 # Ruby on Rails for High School
 
+Go to https://github.com/casscass/code_next_rails_app and open the README 
+
 ## Setting up our Rails app Day 1
 
 
@@ -14,11 +16,16 @@ Click the green Create workspace button at the bottom.
 ![](https://github.com/casscass/code_next_rails_app/blob/master/README-IMAGES/1.Create-new-workspace.png)
 
 ## Creating basic functionality
-NB FOLDER STRUCTURE – Looking at model, view, controller
+NB FOLDER STRUCTURE – Look at model, view, controller
+
 Lets look at the file structure
+
 Open the folders view, model & controller
+
 Look at the files in these folders
+
 We are about to make a Post scaffold, this will create a post file in each of these folders.
+
 Currently there are no Post files in any of these folders.
 
 
@@ -29,22 +36,240 @@ In the Terminal type:
 ```
 rails generate scaffold Post title:string body:text
 ```
+#### Let’s break this command down:
+We’re asking rails to generate a scaffold (basic building blocks; think construction scaffolding) for a “thing” that we want to call a Post in our system. In Rails terminology this “thing” (Post) is called a “resource”.
 
+###### We want to give our Post two attributes:
 
+1. a title, which we want to be a string, and
 
+2. a body, which we want to be text.
 
+A string is computer-speak for a short sequence of characters like "hello" or "Are you having fun, yet?", and can usually be as long as your average tweet. Blog titles tend to be short, so we’ll use a string for ours. 
 
-![](https://github.com/casscass/code_next_rails_app/blob/master/README-IMAGES/2.App-Preview.png)
+text is like a string, but longer, so we’ll use it to have enough room to write as many paragraphs as we want in the body of our blog post.
 
-![](https://github.com/casscass/code_next_rails_app/blob/master/README-IMAGES/3.Add-routes.png)
+NB FOLDER STRUCTURE – Looking at POST files
 
-![Bootstrap](https://github.com/casscass/code_next_rails_app/blob/master/README-IMAGES/Bootstrap-in-Gemfile.png)
+NOW lets go back and look at the folders again. We can see that now there are post files in them.
+
+AND…An important file that was generated was the migration 
+
+db/migrate/20140528075017_create_posts.rb
+
+Note that, as this filename starts with a unique id including the date and time, yours will have a different set of numbers.
+
+```
+# db/migrate/20140528075017_create_posts.rb 
+class CreatePosts < ActiveRecord::Migration   
+   def change     
+   create_table :posts do |t|       
+   t.string :title       
+   t.text :body        
+   t.timestamps     
+  end   
+ end 
+end 
+```
+
+This file is Ruby code that Rails uses to manage how your data is stored in the database.
+
+You can see that this code is to create a table called Posts 
+
+and to create two columns in this table, 
+
+1. a title column and 
+
+2. a body column.
+
+Whilst we have generated this code to create our Posts table, the script has not yet been executed and therefore the table does not yet exist in our database.
+
+We need to instruct Rails to apply this to our database. In the Terminal type type :
+
+```
+ rake db:migrate 
+ ```
+
+## Setting the index/root page in Rails
+
+If we run the server and look at our Blog it will look like this:
+
+![]
+(https://github.com/casscass/code_next_rails_app/blob/master/README-IMAGES/2.App-Preview.png)
+
+Click the red Open the App buttion
+
+Now we have this page
+
+![]
+(https://github.com/casscass/code_next_rails_app/blob/master/README-IMAGES/3.Add-routes.png)
+
+Because we are in Cloud9 we need to set the route
+Open config/routes.rb and add 
+
+```
+ root ‘posts#index’ 
+ ```
+ 
+ to that file so it looks like:
+
+ ```
+ # config/routes.rb 
+ 
+Rails.application.routes.draw do  
+	resources :posts 	  
+	end 
+root 'posts#index'  
+```
+
+(Don’t forget to save your file.)
+
+Once this command has run you can start up your Rails server again with rails server and then navigate to your workspace to see the changes you’ve made to your application.
+
+From here you can play around with your application.
+
+### TASK Create 3 new posts
+
+## Changing the Heading and title of your new blog
+
+NB put up app and terminal side by side so students can see the html changes.
+
+Lets look at the html code for your apps main page.
+
+Goto cloud9 text editor.
+
+Look at the folders down the left hand side.
+
+Open the app folder by clicking on the grey arrow. The views folder is the 6th one down
+
+Open the views folder, inside is the posts folder.
+
+Open the posts folder - Look at the file structure.
+
+Open the file called index.html.erb by double clicking on it.
+
+This file structure is written as app/views/posts/index.html.erb 
+
+On line 3 change 
+
+``` <h1>Listing Posts</h1> 
+```
+ to 
+ 
+ ```
+  <h1>Awesome Posts</h1>
+  ```
+
+Save  
+
+```
+command s
+```
+
+and refresh the app… what is the keyboard shortcut to refresh the app
+
+## Every Post must have a title & body
+
+We’re going to add some functionality to our new Rails app to enforce a rule that every post must have a title.
+
+Open 
+
+```
+app/models/post.rb 
+```
+
+and add the following line to your code:
+
+```
+validates :body, :title, presence: true 
+```
+
+(Don’t forget to save your file.)
+
+Your post.rb file should look like:
+
+```
+# app/models/post.rb 
+class Post < ApplicationRecord   
+  validates :body, :title, presence: true 
+end 
+```
+
+We can check that this works by returning to our browser, editing our blog post, deleting the title and clicking Update Post.
+
+You’ll get an error informing you that you’ve attempted to break the rule you just created:
+
+## Changing the Look of the Show Page
+
+Right now our  show post page isn’t looking very good.
+
+Mine looks like this:
 
 ![Show Page](https://github.com/casscass/code_next_rails_app/blob/master/README-IMAGES/ShowPage1-original.png)
 
-![Show Page - fixed up](https://github.com/casscass/code_next_rails_app/blob/master/README-IMAGES/ShowPage2-FixedUp.png)
+Lets fix up the look by changing the title to a <h2> and get rid of the words “title” and ‘body”Open   
+
+``` 
+app/views/posts/show.html.erb 
+```     
+
+and make it look like the following:
+
+```
+<p id="notice"><%= notice %></p>  
+<h2><%= link_to_unless_current @post.title, @post %></h2> 
+<%= simple_format @post.body %>  
+ 
+<%= link_to 'Edit', edit_post_path(@post) %> | 
+<%= link_to 'Back', posts_path %>
+```
+
+SAVE FILE
+
+Refresh the Show page in your browser  
+
+What has changed? The Post heading is now a <h2> heading and the words Title and Body have gone. 
+
+Mine now looks like this:
+
+![Mine now looks like this:](https://github.com/casscass/code_next_rails_app/blob/master/README-IMAGES/ShowPage2-FixedUp.png)
+
+
+Go To your show page at 
+```
+app/views/posts/show.html.erb 
+```
+
+and add a <h1> heading so your  show.html.erb  file looks like this: 
+
+```
+<p id="notice"><%= notice %></p>
+<h1>My Awesome Show Page</h1>  
+<h2><%= link_to_unless_current @post.title, @post %></h2> 
+<%= simple_format @post.body %>  
+ 
+<%= link_to 'Edit', edit_post_path(@post) %> | 
+<%= link_to 'Back', posts_path %> 
+```
+SAVE FILE
+
+And now my show page looks like this:
 
 ![Show Page-with headings](https://github.com/casscass/code_next_rails_app/blob/master/README-IMAGES/ShowPage3-h1-Heading.png)
+
+
+
+
+
+
+
+
+![Bootstrap](https://github.com/casscass/code_next_rails_app/blob/master/README-IMAGES/Bootstrap-in-Gemfile.png)
+
+
+
+
+
 
 
 
