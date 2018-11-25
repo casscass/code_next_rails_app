@@ -13,7 +13,8 @@ Select the ruby on rails button (top right )
 
 Click the green Create workspace button at the bottom.
 
-![](https://github.com/casscass/code_next_rails_app/blob/master/README-IMAGES/1.Create-new-workspace.png)
+![Workspace]
+(https://github.com/casscass/code_next_rails_app/blob/master/README-IMAGES/1.Create-new-workspace.png)
 
 ## Creating basic functionality
 NB FOLDER STRUCTURE – Look at model, view, controller
@@ -191,9 +192,10 @@ Your post.rb file should look like:
 
 ```
 # app/models/post.rb 
-class Post < ApplicationRecord   
-  validates :body, :title, presence: true 
-end 
+class Post < ApplicationRecord
+  validates :body, :title, presence: true
+end
+
 ```
 
 We can check that this works by returning to our browser, editing our blog post, deleting the title and clicking Update Post.
@@ -221,10 +223,11 @@ and make it look like the following:
 
 ```
 <p id="notice"><%= notice %></p>  
-<h2><%= link_to_unless_current @post.title, @post %></h2> 
-<%= simple_format @post.body %>  
- 
-<%= link_to 'Edit', edit_post_path(@post) %> | 
+
+<h2><%= link_to_unless_current @post.title, @post %></h2>
+<%= simple_format @post.body %>
+
+<%= link_to 'Edit', edit_post_path(@post) %> |
 <%= link_to 'Back', posts_path %>
 ```
 
@@ -304,11 +307,11 @@ Your code should look like this:
 
 ```
 # app/models/post.rb 
-class Post < ApplicationRecord   
-	has_many :comments, dependent: :destroy  
-    
-      validates :body, :title, presence: true 
-end 
+class Post < ApplicationRecord
+  has_many :comments, dependent: :destroy
+
+  validates :body, :title, presence: true
+end
 ```
 
 SAVE FILE
@@ -345,29 +348,26 @@ end
 
 NOW we need to write the action that will create our comments. 
 
-Open 
-
-```
-app/controllers/comments_controller.rb 
-```
+Open app/controllers/comments_controller.rb 
 
 and make your code look like the following:
 
 ```
 # app/controllers/comments_controller.rb 
-class CommentsController < ApplicationController   
- def create     
- @post = Post.find(params[:post_id])     
- @comment = @post.comments.create!(comment_params)  
- redirect_to @post   
- end    
- 
- private    
- 
-  def comment_params              
-  params.require(:comment).permit(:body)   
-  end 
-end 
+class CommentsController < ApplicationController
+  def create
+    @post = Post.find(params[:post_id])
+    @comment = @post.comments.create!(comment_params)
+    redirect_to @post
+  end
+
+  private
+
+  def comment_params
+    params.require(:comment).permit(:body)
+  end
+end
+
 ```
 
 (Don’t forget to save your file.)
@@ -394,6 +394,7 @@ Create a NEW file in app/views/comments  called
 
 ```
 _comment.html.erb
+
 ```
 
 
@@ -405,6 +406,7 @@ Double click on the new FILE and name it
 
 ```
  _comment.html.erb
+
  ```
 
 ###### Open app/views/comments/_comment.html.erb  and make it look like:
@@ -429,10 +431,11 @@ SAVE FILE
 <%= link_to 'Edit', edit_post_path(@post) %> | 
 <%= link_to 'Back', posts_path %>  
  
-<h2>Comments</h2> 
-<div id="comments">   
-<%= render partial: @post.comments %>
-</div> 
+<h2>Comments</h2>
+<div id="comments">
+  <%= render partial: @post.comments %>
+</div>
+
 ```
 
 Go to workspace and refresh…The h2 Comments heading will be under the edit | back buttons
@@ -445,13 +448,14 @@ Go to workspace and refresh…The h2 Comments heading will be under the edit | b
 Add the following code to the bottom of that file.
 
 ```
-<%= form_for [@post, Comment.new] do |f| %>   
-<p>     
-<%= f.label :body, "New comment" %><br/>     
-<%= f.text_area :body %>   
-</p>   
-<p><%= f.submit "Add comment" %></p> 
-<% end %> 
+<%= form_for [@post, Comment.new] do |f| %>
+  <p>
+    <%= f.label :body, "New comment" %><br/>
+    <%= f.text_area :body %>
+  </p>
+  <p><%= f.submit "Add comment" %></p>
+<% end %>
+
 ```
 
 Your show.html.erb  file should now look like this:
@@ -544,11 +548,7 @@ bundle update
 
 enter  
 
-Open 
-
-```
-app/assets/stylesheets/application.css 
-```
+Open app/assets/stylesheets/application.css 
 
 and rename the extension .css to  .scss so it looks like this 
 
@@ -565,11 +565,8 @@ Add
 on line 16 then save and exit.
 
 
-Open 
+Open app/assets/javascript/application.js
 
-```
-app/assets/javascript/application.js
-```
 Update it so that the require section at the bottom of the file includes the following:
 
 
@@ -695,58 +692,6 @@ How to do this:
 }
 ```
 
-### Add A Nav Menu and Footer to a Rails App Using Bootstrap!
-
-Navigation menus are so important on websites, they let you navigate 
-between pages, and often give you an idea about what a website is about.
-
-We will implement a nav menu that you can style however you like!
-
-#### Navigation Menu
-
-1. Open the following file in Cloud 9: `app/views/layouts/application.html.erb`.
-
-2. Add the following code snippet to the file:
-
-``` HTML
-<!-- START NAVBAR  -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light"> 
-  <a class="navbar-brand" href="#">MY WEBSITE TITLE</a> <!-- TODO: Put your website's name here !!  -->
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-    <div class="navbar-nav">
-      <a class="nav-item nav-link active" href="/">Home</a> <!-- Duplicate this to add more items to your menu -->
-      <a class="nav-item nav-link active" href="/menuItemName">Your Menu Item</a> <!-- Duplicate this to add more items to your menu -->
-    </div>
-  </div>
-</nav>
-<!-- END NAVBAR -->
-```
-
-3. Open the following file in Cloud 9: `app/assets/stylesheets/application.scss` and add the following to the end of the file:
-
-``` SCSS
-
-.navbar-brand {
-  color: red !important;
-  font-weight: bold;
-}
-
-```
-
-4. Remove `bg-light` from the `<nav>` element in your menu, and change `navbar-light` to `navbar-dark`.
-
-5. Add the following CSS selector to the end of the `application.scss` file:
-
-``` SCSS
-
-nav {
-  background: #333333;
-}
-
-```
 
 #### Footer
 
@@ -782,25 +727,7 @@ footer p {
 }
 
 ```
-4. Open the `app/assets/stylesheets/application.scss` file and add the following:
 
-``` SCSS
-
-nav a:hover {
-  color: // CHOOSE A HOVER COLOUR AND ADD !important after it
-}
-
-```
-
-#### Extension Activity (for later)
-
-1. Add additional styles to the `nav` selector in `application.scss` such as:
-  - `border-bottom`, see: https://www.w3schools.com/css/css_border.asp
-  - `box-shadow`, see: https://www.w3schools.com/css/css3_shadows.asp
-  
-2. Add a CSS Gradient as a background to your footer. Use the following website: http://www.colorzilla.com/gradient-editor/ to create a gradient rule.
-
-3. Look at the Bootstrap documentation on Navbars and add some additional features to your navbar, see: https://getbootstrap.com/docs/4.1/components/navbar/
 
 ### Use Bootstrap to Make Forms Look Nice in Rails!
 
