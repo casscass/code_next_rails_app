@@ -172,6 +172,7 @@ and refresh the app… what is the keyboard shortcut to refresh the app
 
 We’re going to add some functionality to our new Rails app to enforce a rule that every post must have a title.
 
+
 Open 
 
 ```
@@ -207,7 +208,10 @@ Mine looks like this:
 
 ![Show Page](https://github.com/casscass/code_next_rails_app/blob/master/README-IMAGES/ShowPage1-original.png)
 
-Lets fix up the look by changing the title to a <h2> and get rid of the words “title” and ‘body”Open   
+Lets fix up the look by changing the title to a h2 and get rid of the words “title” and ‘body”
+
+
+Open   
 
 ``` 
 app/views/posts/show.html.erb 
@@ -228,7 +232,7 @@ SAVE FILE
 
 Refresh the Show page in your browser  
 
-What has changed? The Post heading is now a <h2> heading and the words Title and Body have gone. 
+What has changed? The Post heading has changed and the words Title and Body have gone. 
 
 Mine now looks like this:
 
@@ -240,7 +244,7 @@ Go To your show page at
 app/views/posts/show.html.erb 
 ```
 
-and add a <h1> heading so your  show.html.erb  file looks like this: 
+and add a h1 heading so your show.html.erb file looks like this: 
 
 ```
 <p id="notice"><%= notice %></p>
@@ -258,19 +262,323 @@ And now my show page looks like this:
 ![Show Page-with headings](https://github.com/casscass/code_next_rails_app/blob/master/README-IMAGES/ShowPage3-h1-Heading.png)
 
 
+## Add a form for comments in 4 steps
+
+1. Create a database
+
+2. Create a route
+
+3. Write the action that actually creates a comment
+
+4. Put comments into your HTML view
+
+### Creating a database model for comments
+
+No blog is complete without comments. Let’s add them in.
+
+Shut down your rails server by hitting Ctrl-C and then type in the terminal:
+
+```
+ rails generate resource Comment post:references body:text    
+```
+
+We need to migrate the file into our app
+
+In the terminal type:
+
+
+```
+ rake db:migrate
+ ```
+
+After this you’ll need to inform Rails that your Posts will potentially have many Comments.
+
+Open app/models/post.rb and add the line: 
+
+```
+has_many :comments, dependent: :destroy
+```
+
+Your code should look like this:
+
+
+```
+# app/models/post.rb 
+class Post < ApplicationRecord   
+	has_many :comments, dependent: :destroy  
+    
+      validates :body, :title, presence: true 
+end 
+```
+
+SAVE FILE
+
+
+## Create a route for comments
+
+Go to  Config/routes.rb
+
+Look at the line  resources :comments  and add  , only: [:create]   to the end of the line. It should look like this:
+
+``
+resources :comments, only: [:create]   
+``
+
+This is how your  routes.rb should look:
+
+```
+# config/routes.rb 
+Rails.application.routes.draw do 
+root 'posts#index'    
+ 
+resources :posts do     
+resources :comments, only: [:create]   
+end   
+# For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html 
+end 
+```
+
+(Don’t forget to save your file.)
+
+
+## Write the ACTION that will create our comments
+
+NOW we need to write the action that will create our comments. 
+
+Open 
+
+```
+app/controllers/comments_controller.rb 
+```
+
+and make your code look like the following:
+
+```
+# app/controllers/comments_controller.rb 
+class CommentsController < ApplicationController   
+ def create     
+ @post = Post.find(params[:post_id])     
+ @comment = @post.comments.create!(comment_params)  
+ redirect_to @post   
+ end    
+ 
+ private    
+ 
+  def comment_params              
+  params.require(:comment).permit(:body)   
+  end 
+end 
+```
+
+(Don’t forget to save your file.)
+
+Refresh workspace to make sure there are no errors.
+
+### So far you have: 	
+
+Created the database model for your comments,
+
+migrated your database,
+
+informed Rails of the relationship between comments and posts,
+
+configured a URL that lets you create your comments, and
+
+created the controller action that will create the comments.
+
+##### Now you need to display any comments that have been submitted for a post, and allow users to submit comments.
+
+## Putting comments into your HTML view
+
+Create a NEW file in app/views/comments  called  
+
+```
+_comment.html.erb
+```
+
+
+To do this right click on the comments FOLDER. 
+
+In the drop down menu select Create New File.
+
+Double click on the new FILE and name it  
+
+```
+ _comment.html.erb
+ ```
+
+###### Open app/views/comments/_comment.html.erb  and make it look like:
+
+```
+<p>   
+<%= comment.body %> 
+</p> 
+```
+
+SAVE FILE
+
+###### Open app/views/posts/show.html.erb and make it look like:
+
+```
+<p id="notice"><%= notice %></p>
+ 
+<h1>My Awesome Show Page</h1>
+<h2><%= link_to_unless_current @post.title, @post %></h2>
+<p><%= simple_format @post.body %></p>
+ 
+<%= link_to 'Edit', edit_post_path(@post) %> | 
+<%= link_to 'Back', posts_path %>  
+ 
+<h2>Comments</h2> 
+<div id="comments">   
+<%= render partial: @post.comments %>
+</div> 
+```
+
+Go to workspace and refresh…The h2 Comments heading will be under the edit | back buttons
+
+
+## Adding the Comment FORM 
+
+###### Open app/views/posts/show.html.erb  
+
+Add the following code to the bottom of that file.
+
+```
+<%= form_for [@post, Comment.new] do |f| %>   
+<p>     
+<%= f.label :body, "New comment" %><br/>     
+<%= f.text_area :body %>   
+</p>   
+<p><%= f.submit "Add comment" %></p> 
+<% end %> 
+```
+
+Your show.html.erb  file should now look like this:
+
+```
+<p id="notice"><%= notice %></p>
+ 
+<h1>My Awesome Show Page</h1>
+ 
+<h2><%= link_to_unless_current @post.title, @post %></h2>
+<p><%= simple_format @post.body %></p>
+ 
+<%= link_to 'Edit', edit_post_path(@post) %> | 
+<%= link_to 'Back', posts_path %>  
+ 
+<h2>Comments</h2> 
+<div id="comments">   
+<%= render partial: @post.comments %>
+</div> 
+ 
+<%= form_for [@post, Comment.new] do |f| %>
+  <p>
+    <%= f.label :body, "New comment" %><br/>
+    <%= f.text_area :body %>
+  </p>
+  <p><%= f.submit "Add comment" %></p>
+<% end %>
+
+```
+
+Comments are now working, so go ahead and browse to your post and add a new comment.
 
 
 
+## Styling Rails with Bootstrap
 
+###Adding Bootstrap
 
+Go to https://medium.freecodecamp.org/add-bootstrap-to-your-ruby-on-rails-project-8d76d70d0e3b
+and follow the instructions to install bootstrap or follow the instructions below:
+
+Open your gemfile and add:
+
+```
+# Bootstrap 4
+gem 'bootstrap', '~> 4.1.3'
+```
+
+It will look like this:
 
 ![Bootstrap](https://github.com/casscass/code_next_rails_app/blob/master/README-IMAGES/Bootstrap-in-Gemfile.png)
 
 
+Now we need to update Rails so it can access the bootstrap gem.
+
+Stop the server
+
+Go to the Bash Terminal and type
+
+```
+bundle install 
+```
+
+enter
 
 
+Then type
+
+```
+bundle update   
+```
+
+enter
 
 
+If problems  type
+
+```
+gem install bundler 
+```
+
+enter
+
+
+Then type
+
+```     
+bundle update 
+```
+
+enter  
+
+Open 
+
+```
+app/assets/stylesheets/application.css 
+```
+
+and rename the extension .css to  .scss so it looks like this 
+
+```
+app/assets/stylesheets/application.scss
+```
+
+Add 
+
+```
+@import‘bootstrap’; 
+```
+
+on line 16 then save and exit.
+
+
+Open 
+
+```
+app/assets/javascript/application.js
+```
+Update it so that the require section at the bottom of the file includes the following:
+
+
+```
+//=require bootstrap
+```
+
+Dont forget to save
+ 
 
 
 ## HTML / CSS Explainers
