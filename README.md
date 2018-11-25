@@ -1,5 +1,27 @@
 # Ruby on Rails for High School
 
+## Setting up our Rails app Day 1
+
+
+Sign into cloud9
+Give your Blog a name
+Select the ruby on rails button (top right )
+Click the green Create workspace button at the bottom.
+
+![](https://github.com/casscass/artcloud/blob/master/app/assets/images/Wireframs.png)
+
+## Creating basic functionality
+NB FOLDER STRUCTURE – Looking at model, view, controller
+Lets look at the file structure
+Open the folders view, model & controller
+Look at the files in these folders
+We are about to make a Post scaffold, this will create a post file in each of these folders.
+Currently there are no Post files in any of these folders.
+
+
+
+
+
 ## HTML / CSS Explainers
 
 ### HTML
@@ -45,7 +67,6 @@ h1 {
 
 ## Process for Styling Rails with Bootstrap
 
-This section must use the starter app provided in the `starter-app` folder.
 
 ### Google Fonts with Ruby on Rails!
 
