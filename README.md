@@ -4,11 +4,14 @@
 
 
 Sign into cloud9
+
 Give your Blog a name
+
 Select the ruby on rails button (top right )
+
 Click the green Create workspace button at the bottom.
 
-![](https://github.com/casscass/artcloud/blob/master/app/assets/images/Wireframs.png)
+![](https://github.com/casscass/code_next_rails_app/blob/master/README-IMAGES/1.Create-new-workspace.png)
 
 ## Creating basic functionality
 NB FOLDER STRUCTURE – Looking at model, view, controller
@@ -19,6 +22,29 @@ We are about to make a Post scaffold, this will create a post file in each of th
 Currently there are no Post files in any of these folders.
 
 
+## Using a Rails generator to build some code for you
+
+In the Terminal type:
+
+```
+rails generate scaffold Post title:string body:text
+```
+
+
+
+
+
+![](https://github.com/casscass/code_next_rails_app/blob/master/README-IMAGES/2.App-Preview.png)
+
+![](https://github.com/casscass/code_next_rails_app/blob/master/README-IMAGES/3.Add-routes.png)
+
+![Bootstrap](https://github.com/casscass/code_next_rails_app/blob/master/README-IMAGES/Bootstrap-in-Gemfile.png)
+
+![Show Page](https://github.com/casscass/code_next_rails_app/blob/master/README-IMAGES/ShowPage1-original.png)
+
+![Show Page - fixed up](https://github.com/casscass/code_next_rails_app/blob/master/README-IMAGES/ShowPage2-FixedUp.png)
+
+![Show Page-with headings](https://github.com/casscass/code_next_rails_app/blob/master/README-IMAGES/ShowPage3-h1-Heading.png)
 
 
 
